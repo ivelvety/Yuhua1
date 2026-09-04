@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>白云钥匙</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand-icon" aria-hidden="true">⌁</div>
+        <div class="brand-copy">
+          <span>BAIYUN KEYS</span>
+          <h1>白云钥匙</h1>
+        </div>
+        <div class="local-badge">✓ 仅本机</div>
+      </header>
+
+      <section id="browser-warning" class="warning hidden">
+        <strong>请用 Bluefy 打开本页</strong>
+        <p>当前浏览器没有网页蓝牙能力。iPhone 请在 Bluefy 中打开此网址。</p>
+        <a href="https://apps.apple.com/cn/app/bluefy-web-ble-browser/id1492822055">前往 App Store</a>
+      </section>
+
+      <section id="status-card" class="status-card" aria-live="polite">
+        <div id="status-icon" class="status-icon" aria-hidden="true">⌾</div>
+        <div>
+          <div class="status-title"><strong id="status-door">我的门禁</strong><span id="saved-badge" class="saved hidden">已保存</span></div>
+          <p id="status-text">填好门禁信息后，就可以连接并开锁</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          <div><h2>门禁信息</h2><p>第一次填写，之后会自动从本机载入</p></div>
+          <span aria-hidden="true">◉</span>
+        </div>
+
+        <form id="door-form" novalidate>
+          <label for="door-name">门禁名称</label>
+          <input id="door-name" name="name" placeholder="例如：小区南门" autocomplete="off" required />
+
+          <div class="field-grid">
+            <div>
+              <label for="mac">MAC 地址</label>
+              <input id="mac" name="mac" placeholder="AA:BB:CC:DD:EE:FF" autocomplete="off" autocapitalize="characters" required />
+            </div>
+            <div>
+              <label for="bluetooth-name">蓝牙名称 <small>可选</small></label>
+              <input id="bluetooth-name" name="bluetoothName" placeholder="设备列表中的名称" autocomplete="off" />
+            </div>
+          </div>
+
+          <label for="door-key">解锁 Key</label>
+          <div class="key-field">
+            <input id="door-key" name="key" type="password" placeholder="16–32 位十六进制字符" autocomplete="off" autocapitalize="characters" required />
+            <button id="toggle-key" type="button" class="icon-button" aria-label="显示 Key">显示</button>
+          </div>
+        </form>
+
+        <div class="privacy-note">✓ 门禁信息只保存在当前浏览器的本地存储中，网页不会上传这些信息。</div>
+      </section>
+
+      <button id="unlock" class="unlock-button" type="button">⌁　连接并开锁</button>
+      <div class="button-row">
+        <button id="save" class="secondary-button" type="button">✓ 保存到本机</button>
+        <button id="clear" class="secondary-button" type="button">清除数据</button>
+      </div>
+
+      <details class="logs">
+        <summary>连接记录</summary>
+        <ol id="log-list"><li class="empty-log">还没有连接记录</li></ol>
+      </details>
+
+      <footer>仅用于你已获授权的门禁 · 协议适配自 BaiyunKeys-preview</footer>
+    </main>
+
+    <script src="./crypto-js.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
