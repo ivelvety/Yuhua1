@@ -115,6 +115,34 @@
     if (characteristic.writeValue) return characteristic.writeValue(bytes);
     throw new Error('门锁写入特征不可用');
   }
+  async function selectDevice(config) {
+    const expectedName = config.bluetoothName.trim();
+    if (expectedName && typeof navigator.bluetooth.getDevices === 'function') {
+      try {
+        const permittedDevices = await navigator.bluetooth.getDevices();
+        const target = permittedDevices.find((device) =>
+          (device.name || '').trim().toLocaleLowerCase() === expectedName.toLocaleLowerCase()
+        );
+        if (target) {
+          setStatus('busy', `正在自动连接 ${target.name}…`);
+          addLog(`已找到授权设备 ${target.name}，无需再次选择`);
+          return target;
+        }
+      } catch (_) {
+        addLog('无法读取已授权设备，将打开设备选择列表');
+      }
+    }
+
+    const prompt = expectedName
+      ? `首次使用请在列表中选择 ${expectedName}`
+      : '请在系统列表中选择你的门锁';
+    setStatus('busy', prompt);
+    addLog(prompt);
+    const options = expectedName
+      ? { filters: [{ name: expectedName }], optionalServices: SERVICES }
+      : { acceptAllDevices: true, optionalServices: SERVICES };
+    return navigator.bluetooth.requestDevice(options);
+  }
   async function unlock() {
     if (!saveConfig()) return;
     if (!navigator.bluetooth) throw new Error('当前浏览器不支持网页蓝牙，请用 Bluefy 打开');
@@ -124,8 +152,7 @@
     try {
       logs = []; logList.innerHTML = '<li class="empty-log">正在开始连接…</li>';
       unlockButton.disabled = true; unlockButton.textContent = '正在连接门锁…';
-      setStatus('busy', '请在系统列表中选择你的门锁'); addLog('请在系统列表中选择你的门锁');
-      const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: SERVICES });
+      const device = await selectDevice(config);
       setStatus('busy', `正在连接 ${device.name || config.bluetoothName || '门锁'}…`); addLog('正在连接门锁');
       server = await device.gatt.connect();
       const service = await findService(server);
